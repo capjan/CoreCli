@@ -1,4 +1,4 @@
-# upinfo.exe
+# upinfo
 
 upinfo.exe diplays the up time of your computer since last boot.
 To prevent a name collusion with "uptime" on Linux and OS X computers, this program 

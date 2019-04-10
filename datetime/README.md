@@ -1,4 +1,4 @@
-# datetime.exe
+# datetime
 makes it easy to format date and time on the command line.
 Essentially this tool exposes the .NET DateTime class to the command line.
 

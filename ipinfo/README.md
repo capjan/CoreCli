@@ -1,4 +1,4 @@
-# ipinfo.exe
+# ipinfo
 
 ipinfo.exe lists known ip addresses for your computer.
 
