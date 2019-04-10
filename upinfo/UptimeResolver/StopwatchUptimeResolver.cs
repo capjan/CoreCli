@@ -1,7 +1,7 @@
 ﻿using System;
 using System.Diagnostics;
 
-namespace UptimeExe.UptimeResolver {
+namespace UpInfo.UptimeResolver {
 
     /// <summary>
     /// Resolves the Up Time via Stopwatch Frequency. 

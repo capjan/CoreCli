@@ -4,9 +4,9 @@ using Core.Extensions.ReflectionRelated;
 using Core.Extensions.TextRelated;
 using Core.Reflection;
 using Core.Text.Formatter.Impl;
-using UptimeExe.UptimeResolver;
+using UpInfo.UptimeResolver;
 
-namespace UptimeExe
+namespace UpInfo
 {
     internal class Program
     {
@@ -45,17 +45,17 @@ namespace UptimeExe
                     return;
                 }
 
-                if (options.ShowUptimeOnly)
+                if (options.ShowOnTimeOnly)
                 {
                     timeSpanFormatter.WriteLine(uptime.UptimeSpan, Console.Out);
                     return;
                 }
 
-                Console.Write($"Boot Time:    ");
+                Console.Write("Boot Time:    ");
                 dateFormatter.WriteLine(uptime.LastBoot, Console.Out);
-                Console.Write($"Current Time: ");
+                Console.Write("Current Time: ");
                 dateFormatter.WriteLine(uptime.Now, Console.Out);
-                Console.Write($"Up Time:      ");
+                Console.Write("Up Time:      ");
                 timeSpanFormatter.WriteLine(uptime.UptimeSpan, Console.Out);
             }
             catch (Exception e)
@@ -84,7 +84,7 @@ namespace UptimeExe
                 case "perf":
                     return new PerformanceCounterUptimeResolver();
                 default:
-                    throw new ArgumentException($"invalid uptime resolve strategy: \"{value}\" use: wmi, tick32, tick64, sw or perf");
+                    throw new ArgumentException($"invalid up time resolve strategy: \"{value}\" use: auto, wmi, tick32, tick64, sw or perf");
             }
         }
     }

@@ -1,7 +1,7 @@
 ﻿using System;
-using UptimeExe.UptimeResolver;
+using UpInfo.UptimeResolver;
 
-namespace UptimeExe
+namespace UpInfo
 {
     internal class Uptime
     {

@@ -7,8 +7,8 @@
     <Platform Condition=" '$(Platform)' == '' ">AnyCPU</Platform>
     <ProjectGuid>{52BA68FB-94C7-4A9C-BB93-77932344B190}</ProjectGuid>
     <OutputType>Exe</OutputType>
-    <RootNamespace>UptimeExe</RootNamespace>
-    <AssemblyName>uptime</AssemblyName>
+    <RootNamespace>UpInfo</RootNamespace>
+    <AssemblyName>upinfo</AssemblyName>
     <TargetFrameworkVersion>v4.7.2</TargetFrameworkVersion>
     <FileAlignment>512</FileAlignment>
     <AutoGenerateBindingRedirects>true</AutoGenerateBindingRedirects>

@@ -1,6 +1,6 @@
 ﻿using System;
 
-namespace UptimeExe.UptimeResolver {
+namespace UpInfo.UptimeResolver {
 
     /// <summary>
     /// Resolves Up Time via GetTickCount64 Kernel function. 

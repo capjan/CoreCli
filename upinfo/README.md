@@ -1,8 +1,10 @@
-# uptime.exe
+# upinfo.exe
 
-uptime.exe diplays the uptime of your PC since last boot.
+upinfo.exe diplays the up time of your computer since last boot.
+To prevent a name collusion with "uptime" on Linux and OS X computers, this program 
+was renamed from uptime to upinfo.
 
-## Reasons for uptime
+## Reasons for upinfo
 
 1. I wan't something similar to the well known Linux "uptime" command for my Windows machine.
 2. I don't need nor it want do include informations about "system load average" or "count of users".
@@ -10,7 +12,7 @@ uptime.exe diplays the uptime of your PC since last boot.
 
 ## Usage Exampe:
 ```
-C:\>uptime
+C:\>upinfo
 Boot Time:    31.03.2019 (05:45)
 Current Time: 07.04.2019 (01:38)
 Up Time:      6 days, 19 hours, 53 minutes, 5 seconds
@@ -21,18 +23,18 @@ C:\>
 
 ```
 Usage:
- uptime [options]
+ upinfo [options]
 
 Options:
-  -s, --strategy=VALUE       strategy to resolve the uptime. defaults to: wmi
-                               possible values are:
+  -s, --strategy=value       strategy to resolve the up time. defaults to:
+                               auto
+                               possible value:
+                               * auto = best choice for platform
                                * wmi = windows management interface
-                               * tick32 = GetTickCount() Kernel function
-                               * tick64 = GetTickCount64() Kernel function
-                               * sw = uses the high resolution timer of the
-                               stopwatch
-                               * perf = Uses the "System Up Time" Performance
-                               Counter
+                               * tick32 = GetTickCount() kernel function
+                               * tick64 = GetTickCount64() kernel function
+                               * sw = stopwatch high resolution timer
+                               * perf = performance counter
       --utc                  prints Coordinated Universal Time (UTC) instead
                                of Local Time (LT)
   -b, --bootOnly             print boot time only

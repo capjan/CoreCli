@@ -1,6 +1,6 @@
 ﻿using System.Runtime.InteropServices;
 
-namespace UptimeExe {
+namespace UpInfo {
     public static class SafeNativeMethods
     {
         [DllImport("kernel32")]

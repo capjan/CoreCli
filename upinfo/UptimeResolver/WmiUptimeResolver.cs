@@ -1,7 +1,7 @@
 ﻿using System;
 using System.Management;
 
-namespace UptimeExe.UptimeResolver {
+namespace UpInfo.UptimeResolver {
     
     /// <summary>
     /// Resolves the Up Time via Windows Management Interface (WMI), Fast and matches the result shown by the Task Manager

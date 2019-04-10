@@ -2,7 +2,7 @@
 using System.Runtime.InteropServices;
 using Core.ControlFlow;
 
-namespace UptimeExe.UptimeResolver
+namespace UpInfo.UptimeResolver
 {
     public class SecureUptimeResolver : IUptimeResolver
     {

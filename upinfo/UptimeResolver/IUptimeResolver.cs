@@ -1,6 +1,6 @@
 ﻿using System;
 
-namespace UptimeExe.UptimeResolver
+namespace UpInfo.UptimeResolver
 {
     /// <summary>
     /// Interface to resolve the up time of the current machine.
