@@ -5,9 +5,6 @@ using System.Linq;
 using System.Net;
 using System.Net.NetworkInformation;
 using System.Net.Sockets;
-using System.Runtime.CompilerServices;
-using System.Text;
-using System.Threading.Tasks;
 
 namespace IpInfoExe
 {
@@ -62,6 +59,8 @@ namespace IpInfoExe
                 var name = item.Name;
                 var ipv4 = item.IpV4Address()?.ToString();
                 var ipv6 = item.IpV6Address()?.ToString();
+                // skip entries that we can't render properly
+                if (string.IsNullOrWhiteSpace(ipv4) && string.IsNullOrWhiteSpace(ipv6)) continue;
                 list.Add(name, ipv4, ipv6);
             }
         }
@@ -76,7 +75,15 @@ namespace IpInfoExe
                 var col1 = entry.Ipv4.PadRight(col1Len);
                 var col2 = entry.Ipv6.PadRight(col2Len);
                 writer.Write(indent);
-                writer.WriteLine(showIpv6 ? $"{col1}  {col2}  {entry.Name}" : $"{col1}  {entry.Name}");
+                if (showIpv6)
+                {
+                    writer.WriteLine($"{col1}  {col2}  {entry.Name}");
+                }
+                else
+                {
+                    if (string.IsNullOrWhiteSpace(entry.Ipv4)) continue;
+                    writer.WriteLine($"{col1}  {entry.Name}");
+                }
             }
         }
 
