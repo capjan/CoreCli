@@ -1,6 +1,5 @@
 ﻿using System.Collections.Generic;
 using System.IO;
-using System.Security.Policy;
 using Core.Parser.Arguments;
 
 namespace UptimeExe
@@ -9,12 +8,12 @@ namespace UptimeExe
     {
         public CliOptions(IEnumerable<string> args)
         {
-            Strategy = "wmi";
+            Strategy = "auto";
             DateTimeFormat =  "dd.MM.yyyy (HH:mm)";
             TimeSpanFormat = "";
-            _optionSet = new OptionSet()
+            _optionSet = new OptionSet
             {
-                {"s|strategy=", "strategy to resolve the uptime. defaults to: wmi\npossible {value}:\n* wmi = windows management interface\n* tick32 = GetTickCount() kernel function\n* tick64 = GetTickCount64() kernel function\n* sw = stopwatch high resolution timer\n* perf = performance counter", v => Strategy = v},
+                {"s|strategy=", "strategy to resolve the uptime. defaults to: auto\npossible {value}:\n* auto = best choice for platform\n* wmi = windows management interface\n* tick32 = GetTickCount() kernel function\n* tick64 = GetTickCount64() kernel function\n* sw = stopwatch high resolution timer\n* perf = performance counter", v => Strategy = v},
                 {"utc", "prints Coordinated Universal Time (UTC) instead of Local Time (LT)", v => UseUtc = v != null},
                 {"b|bootOnly", "print boot time only", v=> ShowBootTimeOnly = v != null},
                 {"u|upOnly", "print up time only", v=> ShowUptimeOnly = v != null},

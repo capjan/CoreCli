@@ -69,6 +69,8 @@ namespace UptimeExe
         {
             switch (value.ToLower())
             {
+                case "auto":
+                    return SecureUptimeResolver.Create();
                 case "wmi":
                     return new WmiUptimeResolver();
                 case "tick32":
