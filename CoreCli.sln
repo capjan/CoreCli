@@ -14,6 +14,8 @@ Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "ipinfo.exe", "ipinfo\ipinfo
 EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "upinfo.exe", "upinfo\upinfo.exe.csproj", "{52BA68FB-94C7-4A9C-BB93-77932344B190}"
 EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "build.exe", "build\build.exe.csproj", "{649EB431-ECB2-42E0-8166-BC65BCF8481E}"
+EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
 		Debug|Any CPU = Debug|Any CPU
@@ -32,6 +34,10 @@ Global
 		{52BA68FB-94C7-4A9C-BB93-77932344B190}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{52BA68FB-94C7-4A9C-BB93-77932344B190}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{52BA68FB-94C7-4A9C-BB93-77932344B190}.Release|Any CPU.Build.0 = Release|Any CPU
+		{649EB431-ECB2-42E0-8166-BC65BCF8481E}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{649EB431-ECB2-42E0-8166-BC65BCF8481E}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{649EB431-ECB2-42E0-8166-BC65BCF8481E}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{649EB431-ECB2-42E0-8166-BC65BCF8481E}.Release|Any CPU.Build.0 = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE
