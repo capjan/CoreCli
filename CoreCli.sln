@@ -16,6 +16,8 @@ Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "upinfo.exe", "upinfo\upinfo
 EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "build.exe", "build\build.exe.csproj", "{649EB431-ECB2-42E0-8166-BC65BCF8481E}"
 EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "regex.exe", "regex\regex.exe.csproj", "{F227BF0A-2D4B-4044-A383-C6DEA9F902CC}"
+EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
 		Debug|Any CPU = Debug|Any CPU
@@ -38,6 +40,10 @@ Global
 		{649EB431-ECB2-42E0-8166-BC65BCF8481E}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{649EB431-ECB2-42E0-8166-BC65BCF8481E}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{649EB431-ECB2-42E0-8166-BC65BCF8481E}.Release|Any CPU.Build.0 = Release|Any CPU
+		{F227BF0A-2D4B-4044-A383-C6DEA9F902CC}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{F227BF0A-2D4B-4044-A383-C6DEA9F902CC}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{F227BF0A-2D4B-4044-A383-C6DEA9F902CC}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{F227BF0A-2D4B-4044-A383-C6DEA9F902CC}.Release|Any CPU.Build.0 = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE
