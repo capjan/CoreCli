@@ -10,7 +10,11 @@ CoreCli is a collection of programs that I missed at some point on my computer.
 # Releases
 
 Visit the [Releases](https://github.com/capjan/CoreCli/releases) page to download the
-latest binary packages for your OS.
+latest binary packages for your OS. 
+
+Please note: This is a xcopy deployment package. The required 
+[.NET Framework](https://dotnet.microsoft.com/download/dotnet-framework) must be installed 
+by your own.
 
 ## Build Notes
 For my convenience this repository is configured to be build on Windows for Windows 
