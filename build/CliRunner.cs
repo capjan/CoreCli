@@ -16,25 +16,25 @@ namespace build
                 RedirectStandardOutput = true,
                 RedirectStandardError  = true,
                 CreateNoWindow         = false
-            };            
+            };
         }
 
         public string ReadToEnd()
         {
             var result = "";
             using (var p = new Process())
-            {                                
+            {
                 p.StartInfo          =  _psi;
                 p.Start();
                 result = p.StandardOutput.ReadToEnd();
-                p.WaitForExit();                                
+                p.WaitForExit();
             }
             return result;
         }
 
         public void Redirect(TextWriter writer)
         {
-            ReadLines(writer.WriteLine);            
+            ReadLines(writer.WriteLine);
         }
 
         public void ReadLines(Action<string> callback)
@@ -48,15 +48,15 @@ namespace build
                 p.Start();
                 p.BeginOutputReadLine();
                 p.BeginErrorReadLine();
-                p.WaitForExit();                
+                p.WaitForExit();
                 p.OutputDataReceived -= DataReceived;
                 p.ErrorDataReceived  -= DataReceived;
-            }            
+            }
         }
 
         private void DataReceived(object sender, DataReceivedEventArgs e)
         {
-            _readDataCallback(e.Data);       
+            _readDataCallback(e.Data);
         }
 
         private Action<string> _readDataCallback;

@@ -37,8 +37,8 @@
     <WarningLevel>4</WarningLevel>
   </PropertyGroup>
   <ItemGroup>
-    <Reference Include="CoreLib, Version=1.1.0.0, Culture=neutral, processorArchitecture=MSIL">
-      <HintPath>..\packages\Cap.Core.1.1.0\lib\net472\CoreLib.dll</HintPath>
+    <Reference Include="CoreLib, Version=1.3.3.0, Culture=neutral, processorArchitecture=MSIL">
+      <HintPath>..\packages\Cap.Core.1.3.3\lib\net472\CoreLib.dll</HintPath>
     </Reference>
     <Reference Include="Costura, Version=3.3.3.0, Culture=neutral, PublicKeyToken=9919ef960d84173d, processorArchitecture=MSIL">
       <HintPath>..\packages\Costura.Fody.3.3.3\lib\net40\Costura.dll</HintPath>
@@ -54,7 +54,7 @@
     <Reference Include="System.Xml" />
   </ItemGroup>
   <ItemGroup>
-    <Compile Include="CliOptions.cs" />
+    <Compile Include="Options.cs" />
     <Compile Include="CliRunner.cs" />
     <Compile Include="msbuild.cs" />
     <Compile Include="MsBuildVersionResolver.cs" />

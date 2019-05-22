@@ -1,5 +1,8 @@
 ﻿using System;
+using System.Globalization;
+using Core.Extensions.CollectionRelated;
 using Core.Extensions.TextRelated;
+using Core.Parser.Arguments;
 using Core.Text.Formatter.Impl;
 
 namespace DatetimeExe
@@ -8,37 +11,35 @@ namespace DatetimeExe
     {
         private static void Main(string[] args)
         {
-            var options = new CliOptions(args);
-            var formatter = new DefaultDateTimeFormatter();
-
-            if (options.ShowHelp)
-            {
-                options.WriteHelp(Console.Out);
+            var parser = new OptionParser<Options>();
+            if (!parser.TryParse(args, out var options))
                 return;
-            }
-
-            if (options.ShowVersion)
-            {
-                options.WriteVersion(Console.Out);
-                return;
-            }
-
-            if (options.ShowExamples)
-            {
-                new ExampleWriter(formatter).WriteExamples();
-                return;
-            }
 
             try
             {
-                formatter.Format = options.Format;
+
+                var provider = new CultureInfo(options.CultureTwoLetterCode);
+            
+                var formatter = new DefaultDateTimeFormatter(formatProvider: provider);
+
+                if (options.ShowExamples)
+                {
+                    new ExampleWriter(formatter).WriteExamples();
+                    return;
+                }
+
+                if (options.Extra.Count > 1) throw new InvalidOperationException($"unexpected count of arguments: {options.Extra.ToSeparatedString()}");
+
+                if (options.Extra.Count != 0)
+                    formatter.Format = options.Extra[0];
+
                 formatter.UniversalTime = options.UseUtc;
                 formatter.WriteLine(Console.Out);
             }
             catch (Exception e)
             {
                 Console.Error.WriteLine(e.Message);
-                options.WriteHelp(Console.Out);
+                parser.WriteUsage();
             }
         }
     }

@@ -1,8 +1,6 @@
 ﻿using System;
-using System.Reflection;
-using Core.Extensions.ReflectionRelated;
 using Core.Extensions.TextRelated;
-using Core.Reflection;
+using Core.Parser.Arguments;
 using Core.Text.Formatter.Impl;
 using UpInfo.UptimeResolver;
 
@@ -12,25 +10,15 @@ namespace UpInfo
     {
         private static void Main(string[] args)
         {
-            var options = new CliOptions(args);
+            var parser = new OptionParser<Options>();
+            if (!parser.TryParse(args, out var options))
+                return;
+
             var dateFormatter = new DefaultDateTimeFormatter();
             var timeSpanFormatter = new DefaultTimeSpanFormatter();
 
             try
             {
-                if (options.ShowHelp)
-                {
-                    options.WriteUsage(Console.Out);
-                    return;
-                }
-
-                if (options.ShowVersion)
-                {
-                    var asmInfo = new AssemblyInfo(Assembly.GetExecutingAssembly());
-                    Console.WriteLine($" {asmInfo.Product} Version {asmInfo.GetBestMatchingVersion()}");
-                    return;
-                }
-
                 var resolver = GetStrategy(options.Strategy);
                 var uptime = new Uptime(resolver);
 
@@ -61,7 +49,7 @@ namespace UpInfo
             catch (Exception e)
             {
                 Console.Error.WriteLine(e.Message);
-                options.WriteUsage(Console.Out);
+                parser.WriteUsage();
             }
         }
 

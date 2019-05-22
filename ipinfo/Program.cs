@@ -2,11 +2,9 @@
 using System.Collections.Generic;
 using System.Linq;
 using System.Net.NetworkInformation;
-using System.Reflection;
 using Core.Extensions.NetRelated;
-using Core.Extensions.ReflectionRelated;
 using Core.Net.Impl;
-using Core.Reflection;
+using Core.Parser.Arguments;
 
 namespace IpInfoExe
 {
@@ -14,22 +12,12 @@ namespace IpInfoExe
     {
         private static void Main(string[] args)
         {
-            var options = new CliOptions(args);
+            var parser = new OptionParser<Options>();
+            if (!parser.TryParse(args, out var options))
+                return;
 
             try
             {
-                if (options.ShowHelp)
-                {
-                    options.WriteUsage(Console.Out);
-                    return;
-                }
-
-                if (options.ShowVersion)
-                {
-                    var asmInfo = new AssemblyInfo(Assembly.GetExecutingAssembly());
-                    Console.WriteLine($" {asmInfo.Product} Version {asmInfo.GetBestMatchingVersion()}");
-                    return;
-                }
 
                 var table = new List<Entry>();
                 if (!options.LocalOnly && new DefaultPublicIpResolver().TryResolve(out var publicIp))
@@ -50,7 +38,7 @@ namespace IpInfoExe
             catch (Exception e)
             {
                 Console.Error.WriteLine(e.Message);
-                options.WriteUsage(Console.Out);
+                parser.WriteUsage();
             }
         }
 

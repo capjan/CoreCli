@@ -24,6 +24,8 @@ SET me=%~n0
 SET parent=%~dp0
 IF %parent:~-1%==\ SET parent=%parent:~0,-1%
 
+SET compress="C:\Program Files\7-Zip\7z.exe"
+
 :: set working directory to the directory of this batch file
 pushd "%~dp0"
 
@@ -37,5 +39,6 @@ copy /Y "%parent%\ipinfo\bin\Release\ipinfo.exe" "%parent%\WinRelease"
 copy /Y "%parent%\regex\bin\Release\regex.exe" "%parent%\WinRelease"
 copy /Y "%parent%\upinfo\bin\Release\upinfo.exe" "%parent%\WinRelease"
 
+"%PROGRAMFILES%\7-Zip\7z.exe" a "%parent%\CoreCli-1.2.0.Windows.7z" "%parent%\WinRelease\*"
 :: restore previous working directory
 popd
