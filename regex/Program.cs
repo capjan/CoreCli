@@ -116,7 +116,7 @@ namespace RegExTool
             if (replace == null)
             {
                 // search mode
-                MatchCollection mc = System.Text.RegularExpressions.Regex.Matches(fileContent, pattern, regexOptions);
+                MatchCollection mc = Regex.Matches(fileContent, pattern, regexOptions);
 
                 foreach (Match m in mc)
                 {
@@ -134,7 +134,7 @@ namespace RegExTool
             else
             {
                 // replace mode
-                fileContent = System.Text.RegularExpressions.Regex.Replace(fileContent, pattern,
+                fileContent = Regex.Replace(fileContent, pattern,
                     match =>
                     {
                         matchCount++;
@@ -190,7 +190,7 @@ namespace RegExTool
         private static int GetIndexOfNextNewlineOrEofIndex(string fileContent, Match m)
         {
             var firstIndexAfterMatch = (m.Index + m.Length);
-            var indexOfNextNewLine = fileContent.IndexOfAny(new char[] { '\n', '\r' }, firstIndexAfterMatch, Math.Min(100, fileContent.Length - firstIndexAfterMatch));
+            var indexOfNextNewLine = fileContent.IndexOfAny(new [] { '\n', '\r' }, firstIndexAfterMatch, Math.Min(100, fileContent.Length - firstIndexAfterMatch));
 
             if (indexOfNextNewLine == -1 && fileContent.Length > firstIndexAfterMatch)
             {
@@ -201,7 +201,7 @@ namespace RegExTool
 
         private static int GetStartIndexOfPreString(Match m, string fileContent)
         {
-            var indexOfLastNewline = fileContent.LastIndexOfAny(new char[] { '\n', '\r' }, m.Index, Math.Min(m.Index, 100));            
+            var indexOfLastNewline = fileContent.LastIndexOfAny(new [] { '\n', '\r' }, m.Index, Math.Min(m.Index, 100));            
 
             int indexOfPreString;
             if (indexOfLastNewline != -1)

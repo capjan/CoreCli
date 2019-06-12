@@ -29,7 +29,7 @@ namespace build
             result.Add(msbuildInstallationDir);            
             
             // MS Build bundled with Visual Studio 
-            var editions = new string[] {"Community", "Professional", "Enterprise"};
+            var editions = new [] {"Community", "Professional", "Enterprise"};
             foreach (var edition in editions)
             {
                 result.Add(Path.Combine(programFilesX86Dir, "Microsoft Visual Studio", "2017", edition, "MSBuild"));
