@@ -20,7 +20,7 @@ namespace build
             Refresh();
         }
 
-        public IReadOnlyCollection<MsBuildInfo> All => new ReadOnlyCollection<MsBuildInfo>(_all);
+        public IEnumerable<MsBuildInfo> All => new ReadOnlyCollection<MsBuildInfo>(_all);
 
         public MsBuildInfo Latest => All.FirstOrDefault();
 
