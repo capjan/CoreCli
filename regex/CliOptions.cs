@@ -31,13 +31,13 @@ namespace RegExTool
 
 
         public int OffsetColumnWidth { get; private set; } = 6;
-        public string Replace { get; private set; } = null;
-        public bool ShowHelp { get; private set; } = false;
-        public bool Verbose { get; private set; } = false;
-        public bool CaseSensitive { get; private set; } = false;
-        public bool Recursive { get; private set; } = false;
+        public string Replace { get; private set; }
+        public bool ShowHelp { get; private set; }
+        public bool Verbose { get; private set; }
+        public bool CaseSensitive { get; private set; }
+        public bool Recursive { get; private set; }
         public string Filter { get; private set; } = "*.*";
-        public bool ShowVersion { get; private set; } = false;
+        public bool ShowVersion { get; private set; }
         public RegexOptions RegExOptions { get; private set; }
         public string[] Extra { get; private set; }
 
