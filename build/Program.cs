@@ -1,6 +1,8 @@
 ﻿using System;
 using System.Linq;
+using Core.Diagnostics.Impl;
 using Core.Extensions.CollectionRelated;
+using Core.Extensions.DiagnosticsRelated;
 using Core.Parser.Arguments;
 
 namespace build
