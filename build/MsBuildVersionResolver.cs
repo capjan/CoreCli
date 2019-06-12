@@ -1,5 +1,6 @@
 ﻿using System;
 using System.Text.RegularExpressions;
+using Core.Diagnostics.Impl;
 
 namespace build
 {
@@ -12,7 +13,7 @@ namespace build
 
             var     matches = Regex.Matches(stdout, @"\d+(\.\d+){2,3}");
             Version result;
-            Version netVersion = null;
+            
             switch (matches.Count)
             {
                 case 2:
@@ -20,13 +21,14 @@ namespace build
                     break;
                 case 3:
                     result     = Version.Parse(matches[0].Value);
-                    netVersion = Version.Parse(matches[1].Value);
+                    // ReSharper disable once UnusedVariable
+                    var dotNetVersion = Version.Parse(matches[1].Value);
                     break;
                 default:
                     throw new InvalidOperationException("unexpected return of version call");
             }
 
-            return result;  
+            return result;
         }
     }
 }
