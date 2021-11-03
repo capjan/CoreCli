@@ -5,7 +5,6 @@ CoreCli is a collection of programs that I missed at some point on my computer.
 * [datetime](./datetime/README.md) - makes it easy to format current date and time on cli
 * [ipinfo](./ipinfo/README.md) - shows the public and the local ip addresses of the computer
 * [upinfo](./upinfo/README.md) - shows the up time, boot time and current time
-* [regex](./regex/README.md) - exposes the .NET regular expression engine to the command line
 
 # Releases
 
@@ -21,4 +20,3 @@ For my convenience this repository is configured to be build on Windows for Wind
 and uses [Costura.Fody](https://github.com/Fody/Costura) to merge and compress the 
 output to a single executable. Because Costura.Fody is targeting Windows only,
 this dependency must be removed if you're building for a different OS.
-
