@@ -1,45 +1,29 @@
 # datetime
-makes it easy to format date and time on the command line.
-Essentially this tool exposes the .NET DateTime class to the command line.
 
-## Options
+Format the current date and time with a .NET date/time format string.
 
-```
-Usage:
-
-  datetime [options]... [format]
+```text
+Usage: datetime [options] [format]
 
 Arguments:
-  format                     .NET DateTime Format. Defaults to "dd.MM.yyyy (HH:mm)"
+  format                 .NET date/time format string. Default: dd.MM.yyyy (HH:mm)
 
 Options:
-      --utc                  prints Coordinated Universal Time (UTC) instead
-                               of Local Time (LT)
-  -c, --culture=CULTURE      sets the used CULTURE rules and localization as
-                               two letter language code (ISO 639). defaults to
-                               current local culture (now: en)
-  -h, -?, --help             show this help
-      --examples             show usage examples
-  -v, --version              show version information and exit
+  -f, --format <format>  Set a .NET date/time format string.
+  -c, --culture <culture>
+                         Set a culture name, for example en-US or de-DE.
+      --utc              Format Coordinated Universal Time instead of local time.
+      --examples         Show usage examples.
+  -v, --version          Show version information.
+  -?, -h, --help         Show help and usage information.
 ```
 
-## Usage Examples
-```
-C:\>datetime --format "dd.MM.yyyy (HH:mm:ss)" --culture us
-03.04.2019 (15:01:54)
+Examples:
 
-C:\>datetime --format "f" --culture de
-Mittwoch, 3. April 2019 15:01
-
-C:\>datetime --format "G" --culture fr
-03/04/2019 15:01:54
-
-C:\>datetime --format "G" --culture us --utc
-04/03/2019 13:01:54
-
-C:\>datetime --format "T" --culture de --utc
-13:01:54
+```sh
+datetime --format "dd.MM.yyyy (HH:mm:ss)" --culture de-DE
+datetime --format "G" --culture en-US --utc
+datetime "MMMM dd, yyyy"
 ```
 
-
-
+The `us` culture alias maps to `en-US` for compatibility. Date and time format strings follow the .NET `DateTime` formatting rules.

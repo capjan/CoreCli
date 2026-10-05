@@ -1,46 +1,89 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Linq;
+using System.CommandLine;
+using System.Net;
+using System.Net.Http;
 using System.Net.NetworkInformation;
-using Core.Extensions.NetRelated;
-using Core.Net.Impl;
-using Core.Parser.Arguments;
+using System.Net.Sockets;
 
-namespace IpInfoExe
+namespace IpInfoExe;
+
+internal static class Program
 {
-    internal class Program
+    private static async Task<int> Main(string[] args)
     {
-        private static void Main(string[] args)
+        var ipv6Option = new Option<bool>("--ipv6", "--v6")
         {
-            var parser = new OptionParser<Options>();
-            if (!parser.TryParse(args, out var options))
-                return;
-
+            Description = "Display IPv6 addresses as well as IPv4 addresses."
+        };
+        var localOption = new Option<bool>("--local", "-l")
+        {
+            Description = "Only display local addresses; do not query the public IP service."
+        };
+        var rootCommand = new RootCommand("Show public and local IP addresses.");
+        rootCommand.Options.Add(ipv6Option);
+        rootCommand.Options.Add(localOption);
+        rootCommand.SetAction(async (parseResult, cancellationToken) =>
+        {
             try
             {
+                var entries = new List<Entry>();
+                if (!parseResult.GetValue(localOption))
+                {
+                    var publicIp = await GetPublicIpv4(cancellationToken);
+                    if (publicIp is not null)
+                        entries.Add(new Entry("Internet (Public)", publicIp, null));
+                }
 
-                var table = new List<Entry>();
-                if (!options.LocalOnly && new DefaultPublicIpResolver().TryResolve(out var publicIp))
-                        table.Add("Internet (Public)", publicIp, null);
+                var interfaces = NetworkInterface.GetAllNetworkInterfaces()
+                    .Where(networkInterface => networkInterface.OperationalStatus == OperationalStatus.Up)
+                    .ToArray();
 
-                var allInterfaces = NetworkInterface
-                                    .GetAllNetworkInterfaces()
-                                    .Where(i => i.OperationalStatus == OperationalStatus.Up)
-                                    .ToArray();
+                AddInterfaces(entries, interfaces, NetworkInterfaceType.Ethernet);
+                AddInterfaces(entries, interfaces, NetworkInterfaceType.Wireless80211);
+                AddInterfaces(entries, interfaces, NetworkInterfaceType.Loopback);
 
-                table.AddRange(allInterfaces.Where(i => i.NetworkInterfaceType == NetworkInterfaceType.Ethernet));
-                table.AddRange(allInterfaces.Where(i => i.NetworkInterfaceType == NetworkInterfaceType.Wireless80211));
-                table.AddRange(allInterfaces.Where(i => i.NetworkInterfaceType == NetworkInterfaceType.Loopback));
-                
-                table.WriteTable(Console.Out, options.ShowIpv6);
-
+                Console.Write(LocalExtensions.WriteTable(entries, parseResult.GetValue(ipv6Option)));
+                return 0;
             }
-            catch (Exception e)
+            catch (Exception exception)
             {
-                Console.Error.WriteLine(e.Message);
-                parser.WriteUsage();
+                Console.Error.WriteLine(exception.Message);
+                return 1;
             }
-        }
+        });
 
+        return await rootCommand.Parse(args).InvokeAsync();
     }
+
+    private static async Task<string?> GetPublicIpv4(CancellationToken cancellationToken)
+    {
+        using var client = new HttpClient { Timeout = TimeSpan.FromSeconds(5) };
+        try
+        {
+            var result = await client.GetStringAsync("https://api.ipify.org", cancellationToken);
+            return IPAddress.TryParse(result.Trim(), out var address)
+                   && address.AddressFamily == AddressFamily.InterNetwork
+                ? address.ToString()
+                : null;
+        }
+        catch (HttpRequestException)
+        {
+            return null;
+        }
+        catch (OperationCanceledException) when (!cancellationToken.IsCancellationRequested)
+        {
+            return null;
+        }
+    }
+
+    private static void AddInterfaces(List<Entry> entries, IEnumerable<NetworkInterface> interfaces, NetworkInterfaceType type)
+    {
+        foreach (var networkInterface in interfaces.Where(networkInterface => networkInterface.NetworkInterfaceType == type))
+        {
+            var ipv4 = LocalExtensions.FirstAddress(networkInterface, AddressFamily.InterNetwork)?.ToString();
+            var ipv6 = LocalExtensions.FirstAddress(networkInterface, AddressFamily.InterNetworkV6)?.ToString();
+            if (!string.IsNullOrWhiteSpace(ipv4) || !string.IsNullOrWhiteSpace(ipv6))
+                entries.Add(new Entry(networkInterface.Name, ipv4, ipv6));
+        }
+    }
+
 }

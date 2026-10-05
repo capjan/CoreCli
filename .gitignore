@@ -157,3 +157,7 @@ $RECYCLE.BIN/
 *.bak
 packages/
 .idea/
+
+# .NET SDK outputs
+artifacts/
+TestResults/

@@ -1,0 +1,52 @@
+name: CI
+
+on:
+  push:
+    branches: [main, master]
+  pull_request:
+  workflow_dispatch:
+
+permissions:
+  contents: read
+
+concurrency:
+  group: ${{ github.workflow }}-${{ github.event.pull_request.number || github.ref }}
+  cancel-in-progress: ${{ github.event_name == 'pull_request' }}
+
+env:
+  DOTNET_CLI_TELEMETRY_OPTOUT: '1'
+  DOTNET_NOLOGO: '1'
+
+jobs:
+  test:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Check out repository
+        uses: actions/checkout@3d3c42e5aac5ba805825da76410c181273ba90b1 # v7.0.1
+        with:
+          persist-credentials: false
+      - name: Set up .NET 10
+        uses: actions/setup-dotnet@a98b56852c35b8e3190ac28c8c2271da59106c68 # v6.0.0
+        with:
+          dotnet-version: 10.0.x
+      - name: Restore
+        run: dotnet restore CoreCli.sln
+      - name: Build
+        run: dotnet build CoreCli.sln --configuration Release --no-restore -p:TreatWarningsAsErrors=true
+      - name: Run unit tests
+        run: dotnet test CoreCli.sln --configuration Release --no-build --no-restore
+      - name: Pack tools
+        run: dotnet pack CoreCli.sln --configuration Release --no-restore --output artifacts/packages -p:TreatWarningsAsErrors=true
+      - name: Install and verify packed tools
+        shell: bash
+        run: |
+          tool_dir="$RUNNER_TEMP/corecli-tools"
+          version="$(dotnet msbuild datetime/datetime.exe.csproj -getProperty:Version -nologo)"
+          mkdir -p "$tool_dir"
+          dotnet tool install CoreCli.DateTime --tool-path "$tool_dir" --source artifacts/packages --version "$version"
+          dotnet tool install CoreCli.IpInfo --tool-path "$tool_dir" --source artifacts/packages --version "$version"
+          dotnet tool install CoreCli.UpInfo --tool-path "$tool_dir" --source artifacts/packages --version "$version"
+          "$tool_dir/datetime" --version
+          "$tool_dir/datetime" --culture us --format G --utc
+          "$tool_dir/ipinfo" --local --ipv6
+          "$tool_dir/upinfo" --up-only --compact

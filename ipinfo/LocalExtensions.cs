@@ -1,91 +1,45 @@
-﻿using System;
-using System.Collections.Generic;
-using System.IO;
-using System.Linq;
-using System.Net;
 using System.Net.NetworkInformation;
+
+using System.Net;
 using System.Net.Sockets;
+using System.Text;
 
-namespace IpInfoExe
+namespace IpInfoExe;
+
+internal static class LocalExtensions
 {
-    public static class LocalExtensions
+    public static string WriteTable(IEnumerable<Entry> entries, bool showIpv6)
     {
+        var rows = entries.ToArray();
+        if (!showIpv6)
+            rows = rows.Where(entry => !string.IsNullOrWhiteSpace(entry.Ipv4)).ToArray();
 
-        public static IPAddress IpV4Address(this NetworkInterface value)
+        if (rows.Length == 0)
+            return string.Empty;
+
+        var ipv4Width = rows.Max(entry => entry.Ipv4?.Length ?? 0);
+        var ipv6Width = rows.Max(entry => entry.Ipv6?.Length ?? 0);
+        var builder = new StringBuilder();
+
+        foreach (var entry in rows)
         {
-            return value.FirstByFamily(AddressFamily.InterNetwork);
-        }
+            builder.Append("    ");
+            builder.Append((entry.Ipv4 ?? string.Empty).PadRight(ipv4Width));
+            builder.Append("  ");
 
-        public static IPAddress IpV6Address(this NetworkInterface value)
-        {
-            return value.FirstByFamily(AddressFamily.InterNetworkV6);
-        }
-
-        public static IPAddress FirstByFamily(this NetworkInterface value, AddressFamily family)
-        {
-            return value
-                   .GetIPProperties()
-                   .UnicastAddresses
-                   .FirstOrDefault(i=>i.Address.AddressFamily == family)?.Address;
-        }
-
-        public static void WriteByType(this IEnumerable<NetworkInterface> allInterfaces, NetworkInterfaceType type, AddressFamily family)
-        {
-            var filtered = allInterfaces.Where(i => i.NetworkInterfaceType == type && i.FirstByFamily(family) != null).ToArray();
-            var addressList = filtered.Select(i => i.FirstByFamily(family)).ToArray();
-
-            for (var i = 0; i < filtered.Length; i++)
+            if (showIpv6)
             {
-                var adr = addressList[i].ToString().PadRight(20);
-                var name = filtered[i].Name;
-                Console.WriteLine($"{adr} {name}");
+                builder.Append((entry.Ipv6 ?? string.Empty).PadRight(ipv6Width));
+                builder.Append("  ");
             }
+
+            builder.AppendLine(entry.Name);
         }
 
-        public static void Add(this IList<Entry> list, string name, string ipv4, string ipv6)
-        {
-            list.Add(new Entry()
-            {
-                Name = name ?? "",
-                Ipv4 = ipv4 ?? "",
-                Ipv6 = ipv6 ?? ""
-            });
-        }
-
-        public static void AddRange(this IList<Entry> list, IEnumerable<NetworkInterface> values)
-        {
-            foreach (var item in values)
-            {
-                var name = item.Name;
-                var ipv4 = item.IpV4Address()?.ToString();
-                var ipv6 = item.IpV6Address()?.ToString();
-                // skip entries that we can't render properly
-                if (string.IsNullOrWhiteSpace(ipv4) && string.IsNullOrWhiteSpace(ipv6)) continue;
-                list.Add(name, ipv4, ipv6);
-            }
-        }
-
-        public static void WriteTable(this IList<Entry> list, TextWriter writer, bool showIpv6)
-        {
-            var col1Len = list.Select(i => i.Ipv4.Length).Max();
-            var col2Len = list.Select(i => i.Ipv6.Length).Max();
-            var indent = new string(' ', 4);
-            foreach (var entry in list)
-            {
-                var col1 = entry.Ipv4.PadRight(col1Len);
-                var col2 = entry.Ipv6.PadRight(col2Len);
-                writer.Write(indent);
-                if (showIpv6)
-                {
-                    writer.WriteLine($"{col1}  {col2}  {entry.Name}");
-                }
-                else
-                {
-                    if (string.IsNullOrWhiteSpace(entry.Ipv4)) continue;
-                    writer.WriteLine($"{col1}  {entry.Name}");
-                }
-            }
-        }
-
+        return builder.ToString();
     }
+
+    public static IPAddress? FirstAddress(NetworkInterface networkInterface, AddressFamily family) =>
+        networkInterface.GetIPProperties().UnicastAddresses
+            .FirstOrDefault(address => address.Address.AddressFamily == family)?.Address;
 }

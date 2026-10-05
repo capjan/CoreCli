@@ -1,22 +1,38 @@
 # CoreCli
-CoreCli is a collection of programs that I missed at some point on my computer.
 
-* [build](./build/README.md) - shortcut to build a .NET solution or project
-* [datetime](./datetime/README.md) - makes it easy to format current date and time on cli
-* [ipinfo](./ipinfo/README.md) - shows the public and the local ip addresses of the computer
-* [upinfo](./upinfo/README.md) - shows the up time, boot time and current time
+CoreCli is a small collection of command-line utilities:
 
-# Releases
+* [datetime](./datetime/README.md) formats the current date and time.
+* [ipinfo](./ipinfo/README.md) shows public and local IP addresses.
+* [upinfo](./upinfo/README.md) shows system uptime, boot time, and current time.
 
-Visit the [Releases](https://github.com/capjan/CoreCli/releases) page to download the
-latest binary packages for your OS. 
+The tools target .NET 10 and are distributed as NuGet global tools. Each tool has only `System.CommandLine` as a runtime package dependency.
 
-Please note: This is a xcopy deployment package. The required 
-[.NET Framework](https://dotnet.microsoft.com/download/dotnet-framework) must be installed 
-by your own.
+## Install
 
-## Build Notes
-For my convenience this repository is configured to be build on Windows for Windows 
-and uses [Costura.Fody](https://github.com/Fody/Costura) to merge and compress the 
-output to a single executable. Because Costura.Fody is targeting Windows only,
-this dependency must be removed if you're building for a different OS.
+Install only the commands you need:
+
+```sh
+dotnet tool install --global CoreCli.DateTime
+dotnet tool install --global CoreCli.IpInfo
+dotnet tool install --global CoreCli.UpInfo
+```
+
+## Build and test
+
+```sh
+dotnet test CoreCli.sln --configuration Release
+dotnet pack CoreCli.sln --configuration Release --output artifacts/packages
+```
+
+## NuGet Trusted Publishing
+
+The release workflow publishes the three tool packages with NuGet.org Trusted Publishing through GitHub Actions OIDC. No long-lived NuGet API key is required.
+
+Before the first release:
+
+1. In the NuGet.org account that owns the packages, add a GitHub Trusted Publishing policy for owner `capjan`, repository `CoreCli`, workflow file `release.yml`, and environment `nuget`.
+2. Add the NuGet.org profile name (not the email address or an API key) as the GitHub Actions secret `NUGET_USER`.
+3. Push a version tag such as `v2.0.0` to run the release workflow.
+
+The first successful publish also finalizes NuGet.org's repository ownership binding for the policy.

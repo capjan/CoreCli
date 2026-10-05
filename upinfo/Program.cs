@@ -1,79 +1,89 @@
-﻿using System;
-using Core.Extensions.TextRelated;
-using Core.Parser.Arguments;
-using Core.Text.Formatter.Impl;
-using UpInfo.UptimeResolver;
+using System.CommandLine;
 
-namespace UpInfo
+namespace UpInfo;
+
+internal static class Program
 {
-    internal class Program
+    private static int Main(string[] args)
     {
-        private static void Main(string[] args)
+        var bootOnlyOption = new Option<bool>("--boot-only", "-b")
         {
-            var parser = new OptionParser<Options>();
-            if (!parser.TryParse(args, out var options))
-                return;
-
-            var dateFormatter = new DefaultDateTimeFormatter();
-            var timeSpanFormatter = new DefaultTimeSpanFormatter();
+            Description = "Print the boot time only."
+        };
+        bootOnlyOption.Aliases.Add("--bootOnly");
+        var upOnlyOption = new Option<bool>("--up-only", "-u")
+        {
+            Description = "Print the uptime only."
+        };
+        upOnlyOption.Aliases.Add("--upOnly");
+        var dateFormatOption = new Option<string>("--date-format", "-d")
+        {
+            Description = $"Set the .NET date format. Defaults to {UptimeOutput.DefaultDateFormat}."
+        };
+        dateFormatOption.Aliases.Add("--dateFormat");
+        var uptimeFormatOption = new Option<string?>("--uptime-format", "-t")
+        {
+            Description = "Set a custom .NET TimeSpan format."
+        };
+        uptimeFormatOption.Aliases.Add("--uptimeFormat");
+        var compactOption = new Option<bool>("--compact", "-c")
+        {
+            Description = "Print the uptime in compact form."
+        };
+        var utcOption = new Option<bool>("--utc")
+        {
+            Description = "Print times in Coordinated Universal Time."
+        };
+        var rootCommand = new RootCommand("Show system uptime, boot time, and current time.");
+        rootCommand.Options.Add(bootOnlyOption);
+        rootCommand.Options.Add(upOnlyOption);
+        rootCommand.Options.Add(dateFormatOption);
+        rootCommand.Options.Add(uptimeFormatOption);
+        rootCommand.Options.Add(compactOption);
+        rootCommand.Options.Add(utcOption);
+        rootCommand.SetAction(parseResult =>
+        {
+            if (parseResult.GetValue(bootOnlyOption) && parseResult.GetValue(upOnlyOption))
+            {
+                Console.Error.WriteLine("Choose either --boot-only or --up-only.");
+                return 2;
+            }
 
             try
             {
-                var resolver = GetStrategy(options.Strategy);
-                var uptime = new Uptime(resolver);
+                var now = DateTimeOffset.Now;
+                var uptime = TimeSpan.FromMilliseconds(Environment.TickCount64);
+                var bootTime = now - uptime;
+                var dateFormat = parseResult.GetValue(dateFormatOption) ?? UptimeOutput.DefaultDateFormat;
+                var spanFormat = parseResult.GetValue(uptimeFormatOption);
+                var compact = parseResult.GetValue(compactOption);
+                var utc = parseResult.GetValue(utcOption);
 
-                dateFormatter.Format           = options.DateTimeFormat;
-                dateFormatter.UniversalTime    = options.UseUtc;
-                timeSpanFormatter.CustomFormat = options.TimeSpanFormat;
-                timeSpanFormatter.Compact      = options.Compact;
-
-                if (options.ShowBootTimeOnly)
+                if (parseResult.GetValue(bootOnlyOption))
                 {
-                    dateFormatter.WriteLine(uptime.LastBoot, Console.Out);
-                    return;
+                    Console.WriteLine(UptimeOutput.FormatDate(bootTime, dateFormat, utc));
+                    return 0;
                 }
 
-                if (options.ShowOnTimeOnly)
+                if (parseResult.GetValue(upOnlyOption))
                 {
-                    timeSpanFormatter.WriteLine(uptime.UptimeSpan, Console.Out);
-                    return;
+                    Console.WriteLine(UptimeOutput.FormatSpan(uptime, spanFormat, compact));
+                    return 0;
                 }
 
-                Console.Write("Boot Time:    ");
-                dateFormatter.WriteLine(uptime.LastBoot, Console.Out);
-                Console.Write("Current Time: ");
-                dateFormatter.WriteLine(uptime.Now, Console.Out);
-                Console.Write("Up Time:      ");
-                timeSpanFormatter.WriteLine(uptime.UptimeSpan, Console.Out);
+                Console.WriteLine($"Boot Time:    {UptimeOutput.FormatDate(bootTime, dateFormat, utc)}");
+                Console.WriteLine($"Current Time: {UptimeOutput.FormatDate(now, dateFormat, utc)}");
+                Console.WriteLine($"Up Time:      {UptimeOutput.FormatSpan(uptime, spanFormat, compact)}");
+                return 0;
             }
-            catch (Exception e)
+            catch (FormatException exception)
             {
-                Console.Error.WriteLine(e.Message);
-                parser.WriteUsage();
+                Console.Error.WriteLine(exception.Message);
+                return 2;
             }
-        }
+        });
 
-        private static IUptimeResolver GetStrategy(string value)
-        {
-            switch (value.ToLower())
-            {
-                case "auto":
-                    return SecureUptimeResolver.Create();
-                case "wmi":
-                    return new WmiUptimeResolver();
-                case "tick32":
-                    return new Tick32UptimeResolver();
-                case "tick":
-                case "tick64":
-                    return new Tick64UptimeResolver();
-                case "sw":
-                case "stopwatch":
-                    return new StopwatchUptimeResolver();
-                case "perf":
-                    return new PerformanceCounterUptimeResolver();
-                default:
-                    throw new ArgumentException($"invalid up time resolve strategy: \"{value}\" use: auto, wmi, tick32, tick64, sw or perf");
-            }
-        }
+        return rootCommand.Parse(args).Invoke();
     }
+
 }
