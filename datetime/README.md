@@ -6,7 +6,7 @@ Format the current date and time with a .NET date/time format string.
 Usage: datetime [options] [format]
 
 Arguments:
-  format                 .NET date/time format string. Default: dd.MM.yyyy (HH:mm)
+  format                 .NET date/time format string. Default: g (culture-specific short date and time)
 
 Options:
   -f, --format <format>  Set a .NET date/time format string.

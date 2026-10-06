@@ -72,7 +72,7 @@ internal static class Program
 
 internal static class DateTimeOutput
 {
-    public const string DefaultFormat = "dd.MM.yyyy (HH:mm)";
+    public const string DefaultFormat = "g";
 
     public static CultureInfo GetCulture(string? name)
     {
